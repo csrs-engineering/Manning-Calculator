@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Culvert Calculator</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--medium-gray);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .calculator-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .calculator-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .calculator-header h1 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .calculator-header p {
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result-title {
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .result-explanation {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .info-box {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        table th, table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        table th {
+            background-color: var(--light-gray);
+        }
+        
+        .box-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .box-option {
+            padding: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .box-option:hover {
+            border-color: var(--primary-color);
+            background-color: #f0f7fc;
+        }
+        
+        .box-option.selected {
+            border-color: var(--primary-color);
+            background-color: #e1f0fa;
+        }
+        
+        .box-option h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+        
+        .box-option p {
+            margin: 0.5rem 0 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Culvert Sizing Tool</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="circular.html">Circular Culvert</a></li>
+                <li><a href="box.html">Box Culvert</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>Box Culvert Calculator</h1>
+                <p>Calculate the required dimensions for box culverts using Manning's equation</p>
+            </div>
+            
+            <div class="info-box">
+                <h3>Manning's Equation</h3>
+                <p>Q = (1.49/n) × A × R<sup>2/3</sup> × S<sup>1/2</sup></p>
+                <p>Where:</p>
+                <ul>
+                    <li>Q = Flow rate (cubic feet per second)</li>
+                    <li>n = Manning's roughness coefficient</li>
+                    <li>A = Cross-sectional area of flow (square feet)</li>
+                    <li>R = Hydraulic radius (feet) = A / Wetted Perimeter</li>
+                    <li>S = Channel slope (feet/feet)</li>
+                </ul>
+            </div>
+            
+            <form id="box-form">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="flow-rate">Design Flow Rate (cfs)</label>
+                            <input type="number" id="flow-rate" min="0" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="slope">Channel Slope (ft/ft)</label>
+                            <input type="number" id="slope" min="0.0001" step="0.0001" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="manning">Manning's Roughness Coefficient (n)</label>
+                    <select id="manning" required>
+                        <option value="0.012">Concrete Box (n = 0.012)</option>
+                        <option value="0.024">Corrugated Metal (n = 0.024)</option>
+                        <option value="0.013">Smooth Steel (n = 0.013)</option>
+                        <option value="custom">Custom Value</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="custom-manning-group" style="display: none;">
+                    <label for="custom-manning">Custom Manning's n</label>
+                    <input type="number" id="custom-manning" min="0.001" step="0.001">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="flow-depth">Flow Depth (% of height)</label>
+                            <select id="flow-depth" required>
+                                <option value="0.8">80% (Recommended)</option>
+                                <option value="0.6">60%</option>
+                                <option value="0.7">70%</option>
+                                <option value="0.9">90%</option>
+                                <option value="1.0">100% (Full flow)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="height-constraint">Maximum Height Constraint (ft)</label>
+                            <input type="number" id="height-constraint" min="0" step="0.5" placeholder="Optional">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="aspect-ratio">Preferred Width-to-Height Ratio</label>
+                    <select id="aspect-ratio" required>
+                        <option value="1.5">1.5:1 (Width:Height)</option>
+                        <option value="2">2:1 (Width:Height)</option>
+                        <option value="1">1:1 (Square)</option>
+                        <option value="3">3:1 (Width:Height)</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="custom-ratio-group" style="display: none;">
+                    <label for="custom-ratio">Custom Width-to-Height Ratio</label>
+                    <input type="number" id="custom-ratio" min="0.5" step="0.1">
+                </div>
+                
+                <button type="submit" class="btn btn-block">Calculate Required Box Dimensions</button>
+            </form>
+            
+            <div class="result-container" id="result-container">
+                <h2 class="result-title">Recommended Box Culvert Size</h2>
+                <div class="result-value" id="result-value"></div>
+                <p class="result-explanation" id="result-explanation"></p>
+                
+                <div class="calculations-details" id="calculations-details">
+                    <h3>Calculation Details:</h3>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Required Flow Area</td>
+                            <td id="flow-area"></td>
+                        </tr>
+                        <tr>
+                            <td>Wetted Perimeter</td>
+                            <td id="wetted-perimeter"></td>
+                        </tr>
+                        <tr>
+                            <td>Hydraulic Radius</td>
+                            <td id="hydraulic-radius"></td>
+                        </tr>
+                        <tr>
+                            <td>Theoretical Dimensions (WxH)</td>
+                            <td id="theoretical-dimensions"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <h3>Alternative Box Culvert Options:</h3>
+                <p>Select a standard box culvert size that meets your flow requirements:</p>
+                <div class="box-options" id="box-options">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Culvert Sizing Tool. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Get form elements
+        const form = document.getElementById('box-form');
+        const manningSelect = document.getElementById('manning');
+        const customManningGroup = document.getElementById('custom-manning-group');
+        const customManningInput = document.getElementById('custom-manning');
+        const aspectRatioSelect = document.getElementById('aspect-ratio');
+        const customRatioGroup = document.getElementById('custom-ratio-group');
+        const customRatioInput = document.getElementById('custom-ratio');
+        const resultContainer = document.getElementById('result-container');
+        const resultValue = document.getElementById('result-value');
+        const resultExplanation = document.getElementById('result-explanation');
+        const flowAreaEl = document.getElementById('flow-area');
+        const wettedPerimeterEl = document.getElementById('wetted-perimeter');
+        const hydraulicRadiusEl = document.getElementById('hydraulic-radius');
+        const theoreticalDimensionsEl = document.getElementById('theoretical-dimensions');
+        const boxOptionsContainer = document.getElementById('box-options');
+        
+        // Show/hide custom Manning's n input based on selection
+        manningSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customManningGroup.style.display = 'block';
+                customManningInput.required = true;
+            } else {
+                customManningGroup.style.display = 'none';
+                customManningInput.required = false;
+            }
+        });
+        
+        // Show/hide custom aspect ratio input based on selection
+        aspectRatioSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customRatioGroup.style.display = 'block';
+                customRatioInput.required = true;
+            } else {
+                customRatioGroup.style.display = 'none';
+                customRatioInput.required = false;
+            }
+        });
+        
+        // Standard box culvert dimensions to suggest (width × height in feet)
+        const standardBoxSizes = [
+            {width: 3, height: 2},
+            {width: 3, height: 3},
+            {width: 4, height: 2},
+            {width: 4, height: 3},
+            {width: 4, height: 4},
+            {width: 5, height: 3},
+            {width: 5, height: 4},
+            {width: 5, height: 5},
+            {width: 6, height: 3},
+            {width: 6, height: 4},
+            {width: 6, height: 5},
+            {width: 6, height: 6},
+            {width: 7, height: 4},
+            {width: 7, height: 5},
+            {width: 7, height: 6},
+            {width: 8, height: 4},
+            {width: 8, height: 5},
+            {width: 8, height: 6},
+            {width: 8, height: 7},
+            {width: 8, height: 8},
+            {width: 9, height: 5},
+            {width: 9, height: 6},
+            {width: 9, height: 7},
+            {width: 9, height: 8},
+            {width: 10, height: 5},
+            {width: 10, height: 6},
+            {width: 10, height: 7},
+            {width: 10, height: 8},
+            {width: 10, height: 9},
+            {width: 10, height: 10},
+            {width: 12, height: 6},
+            {width: 12, height: 8},
+            {width: 12, height: 10},
+            {width: 12, height: 12}
+        ];
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get input values
+            const flowRate = parseFloat(document.getElementById('flow-rate').value);
+            const slope = parseFloat(document.getElementById('slope').value);
+            const flowDepthRatio = parseFloat(document.getElementById('flow-depth').value);
+            const heightConstraint = parseFloat(document.getElementById('height-constraint').value) || Infinity;
+            
+            // Get Manning's n value
+            let manningN;
+            if (manningSelect.value === 'custom') {
+                manningN = parseFloat(customManningInput.value);
+            } else {
+                manningN = parseFloat(manningSelect.value);
+            }
+            
+            // Get aspect ratio
+            let aspectRatio;
+            if (aspectRatioSelect.value === 'custom') {
+                aspectRatio = parseFloat(customRatioInput.value);
+            } else {
+                aspectRatio = parseFloat(aspectRatioSelect.value);
+            }
+            
+            // Calculate for box culvert using Manning's equation
+            // For open channel flow: Q = (1.49/n) * A * R^(2/3) * S^(1/2)
+            
+            // First, calculate the required area based on full flow
+            // For a box culvert, R = A/P where P = 2*(width + height)
+            
+            // Let's assume a first estimate based on a certain flow depth ratio
+            let area, height, width, wettedPerim, hydraulicRadius;
+            
+            // Initial area guess without considering the hydraulic radius complex relation
+            let initialAreaGuess = (flowRate * manningN) / (1.49 * Math.pow(slope, 0.5));
+            
+            // Refine this guess with iterations
+            // For simplicity in this app, we'll use a direct approach with reasonable assumptions
+            
+            // For a box culvert with flow depth ratio of flowDepthRatio
+            if (flowDepthRatio < 1.0) {
+                // For partially full flow, adjust area calculation
+                // This is simplified - a full solution would use a more complex approach
+                const extraFactor = 1.3; // Adjustment factor for partial flow
+                initialAreaGuess = initialAreaGuess * extraFactor;
+                
+                // Calculate dimensions based on aspect ratio
+                height = Math.sqrt(initialAreaGuess / aspectRatio);
+                width = aspectRatio * height;
+                
+                // Calculate actual flow area based on partial depth
+                area = width * height * flowDepthRatio;
+                
+                // Calculate wetted perimeter (two sides and bottom when not full)
+                wettedPerim = width + (2 * height * flowDepthRatio);
+            } else {
+                // Full flow
+                // Calculate dimensions based on aspect ratio
+                height = Math.sqrt(initialAreaGuess / aspectRatio);
+                width = aspectRatio * height;
+                
+                area = width * height;
+                wettedPerim = 2 * (width + height);
+            }
+            
+            // Calculate hydraulic radius
+            hydraulicRadius = area / wettedPerim;
+            
+            // Recalculate required area using the hydraulic radius
+            const recalcArea = (flowRate * manningN) / (1.49 * Math.pow(hydraulicRadius, 2/3) * Math.pow(slope, 0.5));
+            
+            // Adjust dimensions based on recalculated area
+            height = Math.sqrt(recalcArea / aspectRatio);
+            width = aspectRatio * height;
+            
+            // Apply height constraint if necessary
+            if (height > heightConstraint) {
+                height = heightConstraint;
+                width = recalcArea / height;
+                aspectRatio = width / height;
+            }
+            
+            // Round to practical dimensions (in 0.5 ft increments)
+            height = Math.ceil(height * 2) / 2;
+            width = Math.ceil(width * 2) / 2;
+            
+            // Recalculate actual values with rounded dimensions
+            area = width * height;
+            if (flowDepthRatio < 1.0) {
+                // Partial flow
+                area = width * (height * flowDepthRatio);
+                wettedPerim = width + (2 * height * flowDepthRatio);
+            } else {
+                // Full flow
+                wettedPerim = 2 * (width + height);
+            }
+            hydraulicRadius = area / wettedPerim;
+            
+            // Display results
+            resultValue.textContent = `${width.toFixed(1)} ft × ${height.toFixed(1)} ft`;
+            resultExplanation.textContent = `Based on a design flow of ${flowRate} cfs with Manning's n of ${manningN} and a slope of ${slope} ft/ft, the recommended box culvert size is ${width.toFixed(1)} ft wide by ${height.toFixed(1)} ft high.`;
+            
+            // Display calculation details
+            flowAreaEl.textContent = `${area.toFixed(2)} sq ft`;
+            wettedPerimeterEl.textContent = `${wettedPerim.toFixed(2)} ft`;
+            hydraulicRadiusEl.textContent = `${hydraulicRadius.toFixed(3)} ft`;
+            theoreticalDimensionsEl.textContent = `${width.toFixed(2)} ft × ${height.toFixed(2)} ft`;
+            
+            // Clear previous box options
+            boxOptionsContainer.innerHTML = '';
+            
+            // Find viable standard box culvert options
+            let viableOptions = standardBoxSizes
+                .filter(size => size.width * size.height >= area && size.height <= heightConstraint)
+                .sort((a, b) => (a.width * a.height) - (b.width * b.height));
+            
+            // Take top 8 options or fewer if there aren't that many
+            viableOptions = viableOptions.slice(0, 8);
+            
+            // Add viable options to the container
+            viableOptions.forEach(size => {
+                const option = document.createElement('div');
+                option.className = 'box-option';
+                option.innerHTML = `
+                    <h4>${size.width} ft × ${size.height} ft</h4>
+                    <p>Area: ${(size.width * size.height).toFixed(1)} sq ft</p>
+                `;
+                
+                // Highlight the option closest to our calculated size
+                if (Math.abs(size.width - width) < 0.6 && Math.abs(size.height - height) < 0.6) {
+                    option.classList.add('selected');
+                }
+                
+                // Make the option selectable
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.box-option').forEach(el => el.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Update the main result with this option
+                    resultValue.textContent = `${size.width} ft × ${size.height} ft`;
+                    resultExplanation.textContent = `Based on a design flow of ${flowRate} cfs with Manning's n of ${manningN} and a slope of ${slope} ft/ft, the selected box culvert size is ${size.width} ft wide by ${size.height} ft high.`;
+                });
+                
+                boxOptionsContainer.appendChild(option);
+            });
+            
+            // Show result container
+            resultContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

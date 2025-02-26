@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Culvert Calculator</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--medium-gray);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .calculator-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .calculator-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .calculator-header h1 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .calculator-header p {
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result-title {
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .result-explanation {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .info-box {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        table th, table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        table th {
+            background-color: var(--light-gray);
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Culvert Sizing Tool</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="circular.html">Circular Culvert</a></li>
+                <li><a href="box.html">Box Culvert</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>Circular Culvert Calculator</h1>
+                <p>Calculate the required diameter for circular culverts using Manning's equation</p>
+            </div>
+            
+            <div class="info-box">
+                <h3>Manning's Equation</h3>
+                <p>Q = (1.49/n) × A × R<sup>2/3</sup> × S<sup>1/2</sup></p>
+                <p>Where:</p>
+                <ul>
+                    <li>Q = Flow rate (cubic feet per second)</li>
+                    <li>n = Manning's roughness coefficient</li>
+                    <li>A = Cross-sectional area of flow (square feet)</li>
+                    <li>R = Hydraulic radius (feet) = A / Wetted Perimeter</li>
+                    <li>S = Channel slope (feet/feet)</li>
+                </ul>
+            </div>
+            
+            <form id="circular-form">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="flow-rate">Design Flow Rate (cfs)</label>
+                            <input type="number" id="flow-rate" min="0" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="slope">Channel Slope (ft/ft)</label>
+                            <input type="number" id="slope" min="0.0001" step="0.0001" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="manning">Manning's Roughness Coefficient (n)</label>
+                    <select id="manning" required>
+                        <option value="0.012">Concrete Pipe (n = 0.012)</option>
+                        <option value="0.024">Corrugated Metal Pipe (n = 0.024)</option>
+                        <option value="0.013">Smooth Steel (n = 0.013)</option>
+                        <option value="0.022">Corrugated Plastic (n = 0.022)</option>
+                        <option value="custom">Custom Value</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="custom-manning-group" style="display: none;">
+                    <label for="custom-manning">Custom Manning's n</label>
+                    <input type="number" id="custom-manning" min="0.001" step="0.001">
+                </div>
+                
+                <div class="form-group">
+                    <label for="flow-depth">Flow Depth (% of diameter)</label>
+                    <select id="flow-depth" required>
+                        <option value="0.8">80% (Recommended)</option>
+                        <option value="0.6">60%</option>
+                        <option value="0.7">70%</option>
+                        <option value="0.9">90%</option>
+                        <option value="1.0">100% (Full flow)</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-block">Calculate Required Diameter</button>
+            </form>
+            
+            <div class="result-container" id="result-container">
+                <h2 class="result-title">Required Culvert Size</h2>
+                <div class="result-value" id="result-value"></div>
+                <p class="result-explanation" id="result-explanation"></p>
+                
+                <div class="calculations-details" id="calculations-details">
+                    <h3>Calculation Details:</h3>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Theoretical Diameter</td>
+                            <td id="theoretical-diameter"></td>
+                        </tr>
+                        <tr>
+                            <td>Area of Flow</td>
+                            <td id="flow-area"></td>
+                        </tr>
+                        <tr>
+                            <td>Wetted Perimeter</td>
+                            <td id="wetted-perimeter"></td>
+                        </tr>
+                        <tr>
+                            <td>Hydraulic Radius</td>
+                            <td id="hydraulic-radius"></td>
+                        </tr>
+                        <tr>
+                            <td>Rounded to Standard Size</td>
+                            <td id="standard-size"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Culvert Sizing Tool. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Standard circular culvert sizes in inches
+        const standardSizes = [12, 15, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 120, 132, 144];
+        
+        // Get form elements
+        const form = document.getElementById('circular-form');
+        const manningSelect = document.getElementById('manning');
+        const customManningGroup = document.getElementById('custom-manning-group');
+        const customManningInput = document.getElementById('custom-manning');
+        const resultContainer = document.getElementById('result-container');
+        const resultValue = document.getElementById('result-value');
+        const resultExplanation = document.getElementById('result-explanation');
+        const theoreticalDiameter = document.getElementById('theoretical-diameter');
+        const flowArea = document.getElementById('flow-area');
+        const wettedPerimeter = document.getElementById('wetted-perimeter');
+        const hydraulicRadius = document.getElementById('hydraulic-radius');
+        const standardSize = document.getElementById('standard-size');
+        
+        // Show/hide custom Manning's n input based on selection
+        manningSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customManningGroup.style.display = 'block';
+                customManningInput.required = true;
+            } else {
+                customManningGroup.style.display = 'none';
+                customManningInput.required = false;
+            }
+        });
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get input values
+            const flowRate = parseFloat(document.getElementById('flow-rate').value);
+            const slope = parseFloat(document.getElementById('slope').value);
+            const flowDepthRatio = parseFloat(document.getElementById('flow-depth').value);
+            
+            // Get Manning's n value
+            let manningN;
+            if (manningSelect.value === 'custom') {
+                manningN = parseFloat(customManningInput.value);
+            } else {
+                manningN = parseFloat(manningSelect.value);
+            }
+            
+            // Calculate required diameter using iterative approach
+            // since for partially full pipes, we need to account for the
+            // complex relationship between flow depth, area, and wetted perimeter
+            
+            // Start with an initial guess based on full flow
+            let initialDiameterEst = Math.pow((flowRate * manningN) / (0.463 * Math.pow(slope, 0.5)), 0.375);
+            
+            // Convert to inches for display
+            initialDiameterEst = initialDiameterEst * 12;
+            
+            // For partially full pipes, we need to adjust our calculation
+            let actualDiameter;
+            let area;
+            let wettedPerim;
+            let hydraulicRad;
+            
+            if (flowDepthRatio < 1.0) {
+                // For partially full pipes, we need to increase the diameter
+                // This is a simplified approach - in practice, you'd use tables or more complex formulas
+                
+                // Convert diameter to feet for calculations
+                let diameterFeet = initialDiameterEst / 12;
+                
+                // Calculate the angle for the partially filled pipe
+                const theta = 2 * Math.acos(1 - 2 * flowDepthRatio);
+                
+                // Calculate area of flow
+                area = (diameterFeet * diameterFeet / 8) * (theta - Math.sin(theta));
+                
+                // Calculate wetted perimeter
+                wettedPerim = (theta * diameterFeet) / 2;
+                
+                // Calculate hydraulic radius
+                hydraulicRad = area / wettedPerim;
+                
+                // Now solve for the required diameter using Manning's equation
+                actualDiameter = Math.pow((flowRate * manningN * Math.pow(wettedPerim, 2/3)) / 
+                                          (1.49 * area * Math.pow(slope, 0.5)), 3/8) * 12;
+            } else {
+                // Full flow calculations
+                actualDiameter = initialDiameterEst;
+                
+                // For full flow, the diameter in feet
+                const diameterFeet = actualDiameter / 12;
+                
+                // Calculate area
+                area = Math.PI * diameterFeet * diameterFeet / 4;
+                
+                // Calculate wetted perimeter
+                wettedPerim = Math.PI * diameterFeet;
+                
+                // Calculate hydraulic radius
+                hydraulicRad = area / wettedPerim;
+            }
+            
+            // Round up to the nearest standard size
+            let requiredSize = standardSizes[0];
+            for (let i = 0; i < standardSizes.length; i++) {
+                if (standardSizes[i] >= actualDiameter) {
+                    requiredSize = standardSizes[i];
+                    break;
+                }
+                
+                // If we've gone through all sizes and none are sufficient
+                if (i === standardSizes.length - 1) {
+                    requiredSize = standardSizes[i];
+                }
+            }
+            
+            // Display results
+            resultValue.textContent = `${requiredSize} inches`;
+            resultExplanation.textContent = `Based on a design flow of ${flowRate} cfs with Manning's n of ${manningN} and a slope of ${slope} ft/ft, the recommended culvert size is ${requiredSize} inches in diameter.`;
+            
+            // Display calculation details
+            theoreticalDiameter.textContent = `${actualDiameter.toFixed(2)} inches`;
+            flowArea.textContent = `${area.toFixed(2)} sq ft`;
+            wettedPerimeter.textContent = `${wettedPerim.toFixed(2)} ft`;
+            hydraulicRadius.textContent = `${hydraulicRad.toFixed(3)} ft`;
+            standardSize.textContent = `${requiredSize} inches`;
+            
+            // Show result container
+            resultContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
